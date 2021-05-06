@@ -1,0 +1,385 @@
+    1  hu
+    2  /cita/local/bin/passwd
+    3  trinity:/cita/share/OpenVPN/CITAvpn.ovpn
+    4  ssh namulla@cosmo4.cita.utoronto.ca
+    5  vncserver
+    6  vncserver -kill :1
+    7  ssh namulla@cosmo4.cita.utoronto.ca
+    8  vncserver
+    9  vncserver -kill :1
+   10  ssh namulla@cosmo4.cita.utoronto.ca
+   11  vncserver
+   12  ls
+   13  ls -l
+   14  ssh namulla@cosmo4.cita.utoronto.ca
+   15  vnc server
+   16  vncserver
+   17  ls -l
+   18  ls -la
+   19  ssh namulla@cosmo4.cita.utoronto.ca
+   20  vncserver
+   21  ssh -g -L1994:cosmo4:1994 namulla@cosmo4.cita.utoronto.ca
+   22  ssh namulla@cosmo4.cita.utoronto.ca
+   23  vncserver
+   24  git
+   25  git config --list
+   26  ls -la
+   27  pwd
+   28  whoami
+   29  ls -l
+   30  cd CTA200H/
+   31  pwd
+   32  ls -l
+   33  cd assignment1_2021
+   34  pwd
+   35  ls -l
+   36  cd average.c
+   37  more average.c
+   38  ls -l
+   39  pwd
+   40  cd
+   41  pwd
+   42  cd ~
+   43  pwd
+   44  mkdir A1
+   45  pwd
+   46  cd A1
+   47  pwd
+   48  ls -la
+   49  cd
+   50  pwd
+   51  cd A1/
+   52  pwd
+   53  echo "# test" >> README.md
+   54  pwd
+   55  ls-l
+   56  ls -l
+   57  ls -la
+   58  git init
+   59  git status
+   60  git add README.md
+   61  license mit
+   62  license -list
+   63  license -o LICENSE.txt isc
+   64  pwd
+   65  echo "# test" >> LICENSE.txt
+   66  pwd
+   67  ls -la
+   68  more LICENSE.txt
+   69  echo "Copyright <YEAR> <COPYRIGHT HOLDER>" >> LICENSE.txt
+   70  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+   71  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+   72  echo "Copyright <2021> <namulla>
+   73  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+   74  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+   75  cd
+   76  pwd
+   77  ls -la
+   78  cd CTA200H
+   79  ls -la
+   80  cd
+   81  ls -la
+   82  cd A1
+   83  ls -l
+   84  more LICENSE.txt 
+   85  more README.md 
+   86  git add README.md
+   87  pwd
+   88  git commit -m "first commit"
+   89  git branch -M main
+   90  remote add origin git@github.com:Nihar-21/CTA200.git
+   91  git remote add origin git@github.com:Nihar-21/CTA200.git
+   92  git push -u origin main
+   93  pwd
+   94  ls -la
+   95  more LICENSE.txt
+   96  git config http.postBuffer 524288000
+   97  git remote add origin git@github.com:Nihar-21/CTA200.git
+   98  git push -u origin main
+   99  pwd
+  100  ls -la
+  101  more LICENSE.txt 
+  102  vi LICENSE.txt 
+  103  ls -la
+  104  more LICENSE.txt 
+  105  vi LICENSE.txt 
+  106  rm LICENSE.txt 
+  107  pwd
+  108  ls -la
+  109  git add LICENSE.txt
+  110  echo "MIT" >> LICENSE.txt
+  111  ls -la
+  112  more LICENSE.txt 
+  113  vi LICENSE.txt 
+  114  more LICENSE.txt 
+  115  pwd
+  116  git add LICENSE.txt README.md 
+  117  git status
+  118  git commit -m "Adding License and ReadMe file"
+  119  git log
+  120  git remote add origin /home/namulla/repos/LICENSE.txt
+  121  cat .git/config
+  122  git push --set-upstream origin Main
+  123  git branch -M main
+  124  git push -u origin main
+  125  cd
+  126  pwd
+  127  cd CTA200H/
+  128  ls -l
+  129  cd lecture 2
+  130  cd lecture2
+  131  pwd
+  132  python
+  133  pwd
+  134  hello.py
+  135  print hello.py
+  136  git push -u origin main
+  137  git branch -M main
+  138  git push -u origin main
+  139  cd
+  140  pwd
+  141  cd la -la
+  142  ls -la
+  143  cd A1
+  144  pwd
+  145  ls -l
+  146  more LICENSE.txt 
+  147  more README.md 
+  148  cd
+  149  git push -u origin main
+  150  cd A1
+  151  git push -u origin main
+  152  git add .
+  153  git commit -m "First commit"
+  154  cd
+  155  git commit -m "First commit"
+  156  cd A1
+  157  git commit -m "First commit"
+  158  git init
+  159  ls -a
+  160  .git
+  161  cd A1
+  162  cd
+  163  pwd
+  164  cd A1
+  165  mkdir <assignment_1>
+  166  mkdir 'assignment_1'
+  167  cd
+  168  pwd
+  169  cd A1
+  170  pwd
+  171  cd assignment_1/
+  172  pwd
+  173  cd
+  174  ls -la
+  175  cd CTA200H/
+  176  ls -la
+  177  cd assignment1_2021
+  178  ls -l
+  179  cp average.c average.h main.c assignment_1
+  180  cp average.c average.h main.c <assignment_1>
+  181  cp average.c average.h main.c A1
+  182  cd 
+  183  ls -la
+  184  cd CTA200H/
+  185  ls -l
+  186  cd assignment1_2021
+  187  ls -l
+  188  cp average.c /assignment_1
+  189  cp average.c assignment_1/
+  190  pwd
+  191  git add average.c
+  192  pwd
+  193  ls -l
+  194  cp main.c /A1
+  195  cp {average.c,average.h,main.c} assignment_1
+  196  cd
+  197  cd A1/
+  198  ls -l
+  199  cd
+  200  ls -l
+  201  cd CTA200H/
+  202  ls -l
+  203  cd assignment1_2021
+  204  ls -l
+  205  cp average.c average.h main.c assignment_1
+  206  ssh-keygen
+  207  cd ~namulla/.ssh/id_rsa.pub.
+  208  cd ~/.ssh
+  209  ls -la
+  210  more id_rsa.pub
+  211  cd
+  212  pwd
+  213  git remote -v
+  214  git remote rm origin
+  215  ls -la
+  216  cd A1
+  217  cd
+  218  git remote rm origin 
+  219  ls -la
+  220  cd CTA200H/
+  221  ls -l
+  222  cd assignment1_2021
+  223  ls -l
+  224  cd
+  225  pwd
+  226  cp ~/CTA200H/assignment1_2021/main.c assignment_1
+  227  pwd
+  228  cd 
+  229  ls -la
+  230  cd A1
+  231  ls -la
+  232  cd assignment_1/
+  233  ls -la
+  234  cd
+  235  cd assignment_1
+  236  cd
+  237  ls -la
+  238  cd assignment_1
+  239  more assignment_1 
+  240  cp ~/CTA200H/assignment1_2021/main.c ~/A1/assignment_1
+  241  pwd
+  242  ls
+  243  cd A1
+  244  ls -la
+  245  cd assignment_1/
+  246  ls -l
+  247  cp ~/CTA200H/assignment1_2021/{average.c,average.h} ~/A1/assignment_1
+  248  cd A1
+  249  cd
+  250  cd A1
+  251  cd assignment_1/
+  252  ls -la
+  253  Makefile
+  254  git Makefile
+  255  make
+  256  history.txt
+  257  history > history.txt
+  258  pwd
+  259  ls -l
+  260  more history.txt 
+  261  pwd
+  262  cd
+  263  pwd
+  264  pwd
+  265  ls -la
+  266  cd A1
+  267  ls -l
+  268  cd assignment_1/
+  269  ls -l
+  270  cd A1
+  271  ls -l
+  272  cd assignment_1/
+  273  ls -l
+  274  pwd
+  275  more main.c 
+  276  more average.h
+  277  vim main.c 
+  278  pwd
+  279  ls -l
+  280  cd A1
+  281  ls -l
+  282  more Makefile 
+  283  vim Makefile 
+  284  ls -l
+  285  cd A1
+  286  ls -l
+  287  vi Makefile 
+  288  vim Makefile.txt
+  289  vi Makefile
+  290  ls -l
+  291  cd A1
+  292  ls -l
+  293  cd assignment_1/
+  294  ls -l
+  295  more history.txt 
+  296  cd
+  297  ls -l
+  298  cd A1
+  299  ls -l
+  300  cd assignment_1/
+  301  ls -l
+  302  pwd
+  303  vim Makefile
+  304  ls -l
+  305  cd A1
+  306  ls -l
+  307  vim Makefile 
+  308  cd assignment_1/
+  309  ls -l
+  310  more Makefile 
+  311  vim Makefile 
+  312  cd 
+  313  cd A1
+  314  cd assignment_1/
+  315  ls -l
+  316  rm Makefile 
+  317  cd
+  318  cd A1
+  319  ls  -l
+  320  vim Makefile 
+  321  ls -l
+  322  rm Makefile 
+  323  ls -l
+  324  cd assignment_1/
+  325  ls -l
+  326  vi Makefile1
+  327  more Makefile1 
+  328  make
+  329  make Makefile1 
+  330  vi Makefile1 
+  331  vi Makefile
+  332  cd
+  333  ls -l
+  334  cd A1/
+  335  ls -l
+  336  cd assignment_1/
+  337  ls -l
+  338  more Makefile
+  339  make
+  340  stop
+  341  vi Makefile
+  342  more Makefile
+  343  make
+  344  ls -l
+  345  make
+  346  more main
+  347  cd
+  348  make
+  349  ls -l
+  350  cd A1
+  351  ls -l
+  352  cd assignment_1/
+  353  ls -l
+  354  more Makefile
+  355  make
+  356  ls
+  357  ./main
+  358  git add Makefile average.c average.h main.c
+  359  git commit -m "Makefile and .c/.h files"
+  360  git status
+  361  git push -u origin main
+  362  cd
+  363  ls -l
+  364  cd A1
+  365  ls -l
+  366  cd assignment_1/
+  367  ls -l
+  368  history > history1.txt
+  369  ls -l
+  370  more history1
+  371  more /history1
+  372  history.txt
+  373  cd history
+  374  cd history.txt
+  375  cd
+  376  history.txt
+  377  history > history.txt
+  378  ls -l
+  379  more history.txt
+  380  git add history.txt
+  381  cd
+  382  ls -l
+  383  cd A1/
+  384  ls -l
+  385  history > history.txt
