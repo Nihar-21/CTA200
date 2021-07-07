@@ -1,0 +1,23 @@
+
+#!/bin/bash -l
+#PBS -l nodes=8:ppn=16
+#PBS -l walltime=48:00:00
+#PBS -r n
+#PBS -j oe
+#PBS -q hpq
+
+# Above are things you need to declare to put tasks into the CITA cluster
+
+# Changing directory to directory which contains python code
+cd /mnt/raid-cita/namulla
+
+# Loading the modules used to run the python program
+module load python/conda3-5.3
+#pip install rebound --user
+
+#OpenMPI
+module load gcc/7.3.0 openmpi/3.0.0-gcc-7.3.0
+
+# Running python program
+mpirun -np 8 -map-by node:SPAN  
+python3 SURP\ TATOOINE\ PLANETS\ CLASSIC\ RESULTS.py
