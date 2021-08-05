@@ -7,7 +7,7 @@ import numpy as np
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-def Plotting(ebs,aps,Na,stime,mu):
+def Plotting0(ebs,aps,Na,stime,MU):
    
     t,ax = plt.subplots(1,1,figsize=(7,5))
     extent=[ebs.min(), ebs.max(), aps.min(), aps.max()]
@@ -19,6 +19,7 @@ def Plotting(ebs,aps,Na,stime,mu):
     im = ax.imshow(stime, aspect='auto', origin="lower", interpolation='nearest', cmap="viridis",extent=extent)
 
     mu = MU
+    ab_s = np.zeros(Na)
     for i,eb in enumerate(ebs):
         ab_s[i] = 1.6 + 5.1*eb-2.22*(eb**2)+4.12*mu-4.27*eb*mu-5.09*(mu**2)+4.61*(eb**2)*mu**2
        #ab_s[i] = 2.278 + 3.824*eb - 1.71*(eb**2)
