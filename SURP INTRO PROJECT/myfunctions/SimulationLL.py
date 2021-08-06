@@ -6,19 +6,13 @@ import random
 from multiprocessing import Pool 
 
 
-#get_ipython().run_line_magic('matplotlib', 'inline')
-# import matplotlib.pyplot as plt
-# from matplotlib import ticker
-# from matplotlib.colors import LogNorm
-# import matplotlib
 
-
-def Simulation(par):
+def SimulationLL(par):
     
     sim = rebound.Simulation()
     sim.integrator = "whfast"
     
-    e_b,a_p, mu,Np = par[0],par[1], par[2], par[3]
+    e_b,a_p,Np = par[0],par[1], par[2]
     
     #**********STAR1***********
     a_b = 1.
@@ -26,7 +20,7 @@ def Simulation(par):
     sim.add(m=m1, hash = "Star1") 
    
     #***********STAR2**********
-    #mu = 0.5  #*******
+    mu = 0.5  #*******
     m2 = (m1*mu)/(1-mu)
     f_b=np.random.rand()*2.*np.pi
     sim.add(m =m2, a= a_b, e=e_b,f=f_b,  hash = "Star2")
