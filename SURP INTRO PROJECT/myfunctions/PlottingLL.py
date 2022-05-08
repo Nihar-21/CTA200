@@ -1,3 +1,8 @@
+# given stime, will convert data to a Data Frame with Event Observations Data (0 or 1)
+# Then plots per given eb,ap,mu value (the number of planets for each simulation)
+# subplot format
+
+
 
 import matplotlib.pyplot as plt
 from matplotlib import ticker
@@ -6,55 +11,113 @@ import matplotlib
 import numpy as np
 import pandas as pd
 from lifelines import KaplanMeierFitter,NelsonAalenFitter
+from lifelines import ExponentialFitter
+from lifelines import PiecewiseExponentialFitter 
+#FOR SURVIVAL REGRESSION
+# from lifelines import CoxPHFitter
+# import rebound
+
+
+
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-def PlottingLL(Pstime,eb,ap,Np):
+def PlottingLL(eb,ap,mu,stime,Np):                    
+   
+                
+    #**************EVENT OBSERVATION*****************#
+    E = np.zeros(Np).astype(int)
     
-    
-    #***************DATA***********************************************#
-    stime = Pstime
-    print(stime)
-    
-    #***************EVENT OBSERVATION**********************************#
-    Npp = Np
-    E = np.zeros(Npp).astype(int)
-    for i,time in enumerate(stime):
-        if (time >= 62831):
+    for i in range(0,30,1):
+        if ((stime[0,i]) > 62831):
             E[i] = 0
         else:
             E[i] = 1
-            
-    #***************MAKING A DATA FRAME*********************************#
-    data1 = {'T':stime, 'E':E}
-    df = pd.DataFrame(data=data1)
-    print(df)
 
+
+#     for i,time in enumerate(stime):
+#         print(time[i])
+#         if (time[i] > 62831):
+#             E[i] = 0
+#         else:
+#             E[i] = 1
+
+
+
+
+    #***************LOAD SIMULATION ARCHIVE************#
+#     sa = rebound.SimulationArchive("archive_eb{:.3f}_ap{:.3f}_Mu{:.3f}_Np{:.2f}_logsp.bin".format(eb,ap,mu,Np)) 
+#     print("Number of snapshots: %d" % len(sa))
+#     print("Time of first and lastsnap shots are: %.1f, %.1f" % (sa.tmin, sa.tmax))
+#     sim = sa[1]
+#     print(sim.t, sim.particles[2])
+#     print("Survival time ",tmax_arr[-1])
+
+
+        
+    #***************MAKING A DATA FRAME****************#
+    data1 = {'T':stime[0], 'E':E}
+    df = pd.DataFrame(data=data1)
+
+    
     T = df['T']
     E = df['E']
-    #return T,E
     
-    #*********************SUBPLOTS***************************************#
-    fig,axs = plt.subplots(1,2)
-    #*********************KMF FITTING************************************#
-    kmf = KaplanMeierFitter()
-    kmf.fit(T,E)
-    kmf.survival_function_
-    #kmf.plot_survival_function()
-    kmf.survival_function_.plot(ax=axs[0])    
-    
-    #***********ESTIMATING HAZARD RATE USING NELSON_AALEN***************#
-    naf = NelsonAalenFitter()
-    naf.fit(T,E)
-    #print(naf.cumulative_hazard_.head())
-    #naf.plot_cumulative_hazard()
-    naf.cumulative_hazard_.plot(ax=axs[1])
-    
-    
-    plt.suptitle('For (eb,ap) = {}'.format((eb,ap)))
+    return T,E,df
 
-      
-    plt.show()
-    plt.savefig("Classic_results.pdf")
+#     #*********************SUBPLOTS***************************************#
+#     fig,axs = plt.subplots(1,2)
+#     #*********************KMF FITTING************************************#
+#     #axs[0].set_xscale('log')
+#     #axs[0].set_yscale('log')
+#     plt.xscale('log')
+#     #axs[1].set_xscale('log')
+#     kmf = KaplanMeierFitter()
+#     kmf.fit(T,E)
+    
+#     #kmf.survival_function_
+#     #kmf.survival_function_.plot(ax=axs[0])
+#     kmf.plot_survival_function(ax=axs[0], at_risk_counts = True)
+#     print(kmf.median_survival_time_) 
+#     plt.title('For (eb,ap,mu) = {}'.format((eb,round(ap,3),mu)))
+    
+  
+
+    
+#     #***********ESTIMATING CUMULATIVE HAZARD RATE USING NELSON_AALEN***********#
+#     naf = NelsonAalenFitter()
+#     naf.fit(T,E)
+#     #naf.cumulative_hazard_.plot(ax=axs[1])
+#     #axs[1].set_yscale('log')
+#     naf.plot_cumulative_hazard(ax=axs[1])
+    
+    #********************HAZARD FUNCTION***************************#
+#     bandwidth = 8.0
+#     naf.plot_hazard(ax = axs[0],bandwidth=bandwidth)
+    
+    
+#     plt.suptitle('For (eb,ap,mu) = {}'.format((eb,round(ap,3),mu)))
+    
+    
+#     #***********EXPONENTIAL FITTER**********************************#
+#     epf = ExponentialFitter().fit(T,E)
+#     #epf.plot_hazard(ax=axs[0]) 
+#     epf.plot_cumulative_hazard(ax=axs[1])
+#     epf.print_summary(3)
+    
+    
+#     #************PIECEWISEEXPONENTIALFITTER*************************#
+#     pf = PiecewiseExponentialFitter(breakpoints=[40,60]).fit(T,E)
+#     ax = pf.plot(ax=axs[1])
+#     #pf.plot_hazard(ax=axs[0])
+#     #ax = naf.plot(ax=ax, ci_show = False)
+#     pf.print_summary(3)
+    
+    
+#     #**********IMAGE SAVING*****************************************#
+#     a= 0
+#     plt.savefig("PHYS4010H_S_H_Func.png")
+#     a= a+1
+#     plt.show()

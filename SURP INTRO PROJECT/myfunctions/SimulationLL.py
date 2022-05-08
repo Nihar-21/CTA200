@@ -12,7 +12,7 @@ def SimulationLL(par):
     sim = rebound.Simulation()
     sim.integrator = "whfast"
     
-    e_b,a_p,Np = par[0],par[1], par[2]
+    e_b,a_p,mu,Np = par[0],par[1], par[2], par[3]
     
     #**********STAR1***********
     a_b = 1.
@@ -20,7 +20,6 @@ def SimulationLL(par):
     sim.add(m=m1, hash = "Star1") 
    
     #***********STAR2**********
-    mu = 0.5  #*******
     m2 = (m1*mu)/(1-mu)
     f_b=np.random.rand()*2.*np.pi
     sim.add(m =m2, a= a_b, e=e_b,f=f_b,  hash = "Star2")
@@ -33,7 +32,7 @@ def SimulationLL(par):
     sim.move_to_com()
     
 #***********************SIM ARCHIVE********************************************************************************* 
-#     sim.automateSimulationArchive("archive_eb{:.3f}_ap{:.3f}_Np{:.2f}.bin".format(e_b,a_p,Np),interval = 1e3, deletefile = True)
+   # sim.automateSimulationArchive("archive_eb{:.3f}_ap{:.3f}_Mu{:.3f}_Np{:.2f}_logsp.bin".format(e_b,a_p,mu,Np),interval = 1e3, deletefile = True)
 
 
 
@@ -41,9 +40,9 @@ def SimulationLL(par):
     Torb = 2.*np.pi
     Norb_max = 1e4 
     Tmax = Norb_max*Torb
-    Tmin = 0
+    Tmin = 10*Torb
     Noutputs = 100
-    times = np.linspace(Tmin, Tmax, Noutputs)
+    times = np.logspace(np.log10(Tmin),np.log10(Tmax),Noutputs)
     
     survtime= np.zeros(Np)  #survival times array
     
@@ -65,10 +64,9 @@ def SimulationLL(par):
     survtime[(survtime==0)] = time
     #print(survtime)
     
-    print('simulation finished, {} planets remianing',(len(sim.particles)-2))
+    print('simulation finished, {} planets remaining',(len(sim.particles)-2))
     
     #print(np.mean(survtime))
-    #return np.mean(survtime) #instead of all 10 planets individually??
     return survtime   
 
     

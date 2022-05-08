@@ -1,3 +1,4 @@
+#Subplot plotting of colour maps (5 by 5 etc) 
 
 import matplotlib.pyplot as plt
 from matplotlib import ticker
@@ -7,50 +8,47 @@ import numpy as np
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-def Plotting(ebs,aps,Na,stime,mus,Np,Ne,Nmu):
+def Plotting(ebs,aps,Ne,stime,Np):
+    
+    print(stime.shape)
     
     
-    t,ax = plt.subplots(nrows =2, ncols = 1, figsize=(7,5))
-    #extent=[ebs.min(), ebs.max(), aps.min(), aps.max()]
-    
-    #for i, mu in enumerate(mus):
-    #for j in range(0,Np):\
-    
-    Arr = np.zeros(Ne*Na*Nmu)
-    
-    for i in range(0,Nmu):
-        Arr.append(np.concatenate(stime[i,:,j,:]) #.ravel()
-    
-    Arr = np.array(Arr).reshape([Ne,Na,Nmu])
-    print(Arr)
-                    
+    fig,ax = plt.subplots(nrows =5, ncols = 5, figsize=(45,45))
+    l = 0
+    for i in range(5):
+        for j in range(5):
+    #for i in range(Np):
+            
+        
+            extent=[ebs.min(), ebs.max(), aps.min(), aps.max()]
 
-    extent=[ebs.min(), ebs.max(), aps.min(), aps.max()]
-
-    ax.set_xlim(extent[0], extent[1])
-    ax.set_ylim(extent[2], extent[3])
-    ax.set_xlabel("Binary Eccentricity $e_b$ ")
-    ax.set_ylabel("Test particle semimajor axis $a_p$")
-    im = ax.imshow(stime1, aspect='auto', origin="lower", interpolation='nearest', cmap="viridis",extent=extent)
+            ax[i,j].set_xlim(extent[0], extent[1])
+            ax[i,j].set_ylim(extent[2], extent[3])
+            ax[i,j].set_xlabel("Binary Eccentricity $e_b$ ",fontsize =30)
+            #print(stime[:,:,l].T)
+            ax[i,j].set_ylabel("Test particle semimajor axis $a_p$",fontsize =30)
+            im = ax[i,j].imshow(stime[:,:,l].T, aspect='auto', origin="lower", interpolation='nearest', cmap="viridis",extent=extent)
+            l = l+1
 
 
-#   ebs = np.linspace(0.,0.7,Ne)
-    ab_s = np.zeros(Na)
-    mu = MU
-    for i,eb in enumerate(ebs):
-        ab_s[i] = 1.6 + 5.1*eb-2.22*(eb**2)+4.12*mu-4.27*eb*mu-5.09*(mu**2)+4.61*(eb**2)*mu**2
-       # ab_s[i] = 2.278 + 3.824*eb - 1.71*(eb**2)
+        #   ebs = np.linspace(0.,0.7,Ne)
+            ab_s = np.zeros(Ne)
+            #mu = 0.5
+            for k,eb in enumerate(ebs):
+                #ab_s[k] = 1.6 + 5.1*eb-2.22*(eb**2)+4.12*mu-4.27*eb*mu-5.09*(mu**2)+4.61*(eb**2)*mu**2
+                ab_s[k] = 2.278 + 3.824*eb - 1.71*(eb**2)
 
-    plt.plot(ebs,ab_s,'c', marker = "^",markersize = 7)
-    plt.xlabel('$e_b$')
-    plt.ylabel('$a_b(a_c$)')
-    plt.title('MU = {} : Critical semimajor axis $a_c$ as a function of eccentricity $e_b$'.format(mu))
+            ax[i,j].plot(ebs,ab_s,'c', marker = "^",markersize = 7)
+            ax[i,j].set_xlabel('$e_b$',fontsize =30)
+            ax[i,j].set_ylabel('$a_b(a_c$)',fontsize = 30 )
+            ax[i,j].set_title('Planet = {} : $a_c$ vs $e_b$'.format(l),fontsize = 35)
 
 
-    cb = plt.colorbar(im, ax=ax)
-    cb.solids.set_rasterized(True)
-    cb.set_label("Particle Survival Times")
+            cb = plt.colorbar(im, ax=ax[i,j])
+            cb.solids.set_rasterized(True)
+            cb.set_label("Particle Survival Times",fontsize = 25)
+            
 
-    plt.show()
+       # plt.show()
     #plt.savefig("Classic_results.pdf")
     
