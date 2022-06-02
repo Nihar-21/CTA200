@@ -21,64 +21,99 @@ from myfunctions import PlottingLL
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-def CoxRegressionModel(stimes,N,ap_s, ebs, aps_, mu, stime,Np):                    
-    #ebs = singular value, eb = 0
-    #aps_ = singular value
-    #stimes = 210
-    #stime = 30 values
+def CoxRegressionModel(stimes, N, ap_s, ap_s2, ap_s3, ap_s5, ebb_,eap_, ebs, aps_0, mu, stime, Np):      
+    
+    #ebs = singular value = 0, 0.175, 0.35, 0.525, 0.7
+    #stimes = 1050 values ( 5 eb values x 7 ap values x 30 survival times)
+    #stime = 30 values for each aps_) value
+    #N = 1050
+    #Np = 30
+    #ap_s, ap_s2, ap_s3 = array of 1050 values used for the data frame
                 
-    #**************EVENT OBSERVATION*****************#
+    #*************************************EVENT OBSERVATION**************************************************#
     E = np.zeros(N).astype(int)
     
-#     for i in range(0,N,1):
-#         if ((stime[i]) > 62831):
-#             E[i] = 0
-#         else:
-#             E[i] = 1
-
     for i,time in enumerate(stimes):
-        #print(time)
         if (time > 62831):
             E[i] = 0
         else:
             E[i] = 1
 
         
-    #***************MAKING A DATA FRAME****************#
-    data1 = {'T':stimes, 'E':E, 'aps':ap_s}
+    #**************************************MAKING A DATA FRAME************************************************#
+    data1 = {'T':stimes, 'E':E, 'aps':ap_s, 'aps2':ap_s2, 'aps3':ap_s3, 'aps5': ap_s5,'eap':eap_, 'eb': ebb_}
     df = pd.DataFrame(data=data1)
 
     T = df['T']
     E = df['E']
-    aps = df['aps']
-    
+    aps = df['aps']   
+    aps2 = df['aps2']
+    aps3 = df['aps3']
+    aps5 = df['aps5']
+    eap = df['eap']
+    eb = df['eb']
+
     #print(df)
     
     
     #************************************COX PH FITTER*************************************#
 
-    
-    cph = CoxPHFitter()
-    #cph.fit(df,duration_col = 'T', event_col = 'E')
-    cph.fit(df,duration_col = 'T', event_col = 'E', formula = "aps + aps*aps + aps*aps*aps")
-
-    cph.print_summary()
-    
+     
     fig,axes = plt.subplots()
 
     axes.set_xscale('log')
     axes.set_ylabel("S(t)")
         
-    KT,KE,Kdf = PlottingLL.PlottingLL(ebs,aps_,mu,stime,Np)
+    KT,KE,Kdf = PlottingLL.PlottingLL(ebs,aps_0,mu,stime,Np)
     kmf = KaplanMeierFitter().fit(KT, KE, label='KaplanMeierFitter')
     kmf.plot_survival_function(ax = axes)
 
-    cph.plot_partial_effects_on_outcome(covariates = 'aps', values = [round(aps_,3)], ax = axes)
-
-    plt.title('aps^4(eb,ap,mu)={}'.format((ebs,round(aps_,3),mu)), fontsize = 12)
-    #plt.savefig('aps^4(eb,ap,mu)={}.png'.format((ebs,round(aps_,3),mu)))
-
+    cph = CoxPHFitter()
     
+    #cph.fit(df,duration_col = 'T', event_col = 'E', formula = "eap")
+    #cph.fit(df,duration_col = 'T', event_col = 'E')
+    
+    cph.fit(df,duration_col = 'T', event_col = 'E', formula = "aps + I(aps**3)")
+    #cph.print_summary()
+    cph.plot_partial_effects_on_outcome(plot_baseline = False, ax = axes, cmap = "coolwarm")
+    #cph.plot_partial_effects_on_outcome(covariates = ['aps'], values = [round(aps_0,3)], plot_baseline = False, ax = axes, cmap = "coolwarm")
+    cph.baseline_survival_.plot(ax=axes, ls = ":", color=f"C{i}")
+
+
+    #cph.fit(df,duration_col = 'T', event_col = 'E', formula = "eb + aps + I(aps**3)")
+    #cph.print_summary()
+    #cph.plot_partial_effects_on_outcome(covariates = ['aps'], values = [round(aps_0,3)], ax = axes)
+
+           
+    plt.title('Formula(aps vs. aps3 (1050 values)): (eb,ap,mu)={}'.format((round(ebs,3),round(aps_0,3),mu)), fontsize = 12)
+    #plt.savefig('Formula(aps vs. aps3 (all values)) : (eb,ap,mu)={}.png'.format((ebs,round(aps_0,3),mu)))
+       
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+    
+    #>>>>>>>>>>>>QUESTION: difference between the coefficients we get from no formula vs. those with the formula; do the formulas improve fit that is already provided with no formula? (which is a better estimate?)
+   
+    #cph.fit(df,duration_col = 'T', event_col = 'E', formula = "aps + I(aps**2) + I(aps**3)") 
+    #cph.plot_partial_effects_on_outcome(covariates = ['aps','aps2','aps3'], values = [round(aps_,3),round(aps_,3)], ax = axes)
+    #cph.plot_partial_effects_on_outcome(covariates = ['eap'], values = [round(eap_0,3)], ax = axes)
+
+       
+    
+    #******************************************EXTRA********************************************************#
     #Goodness of Fit 
     #cph.check_assumptions(df) 
     #******************************Prediction***********************************************#
@@ -103,9 +138,6 @@ def CoxRegressionModel(stimes,N,ap_s, ebs, aps_, mu, stime,Np):
 #         i = i+1
     
     
-    
-    
-        
     #fig,axes = plt.subplots(7, figsize = (15,30), dpi = 450)
     #i = 0
     
@@ -130,14 +162,7 @@ def CoxRegressionModel(stimes,N,ap_s, ebs, aps_, mu, stime,Np):
 #         plt.savefig('(eb,ap,mu)={}.png'.format((ebs[0],round(aps_[x],3),mu)))
 
 #FOR LOOOP**********************************************************************************************************
- 
 
-
-    
-
-  
-
-        
 #     cph.plot_partial_effects_on_outcome(covariates = 'aps', values = [1.5], ax = axs[0])
 #     cph.plot_partial_effects_on_outcome(covariates = 'aps', values = [1.667], ax = axs[1])
 #     cph.plot_partial_effects_on_outcome(covariates = 'aps', values = [1.833],ax = axs[2])
@@ -150,7 +175,11 @@ def CoxRegressionModel(stimes,N,ap_s, ebs, aps_, mu, stime,Np):
     #plt.savefig('image.png')
 
 
-
+#     for i in range(0,N,1):
+#         if ((stime[i]) > 62831):
+#             E[i] = 0
+#         else:
+#             E[i] = 1
                                         
     
     
