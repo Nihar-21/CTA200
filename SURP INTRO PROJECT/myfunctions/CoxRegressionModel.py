@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 #FOR SURVIVAL REGRESSION
 from lifelines import CoxPHFitter, KaplanMeierFitter
-from myfunctions import PlottingLL  
+from myfunctions import PlottingLL, CustomCM 
 
 
 
@@ -21,7 +21,7 @@ from myfunctions import PlottingLL
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-def CoxRegressionModel(stimes, N, ap_s, ap_s2, ap_s3, ap_s5, ebb_,eap_, ebs, aps_0, mu, stime, Np):      
+def CoxRegressionModel(stimes, N, ap_s, ebs, aps_0, mu, stime, Np):      
     
     #ebs = singular value = 0, 0.175, 0.35, 0.525, 0.7
     #stimes = 1050 values ( 5 eb values x 7 ap values x 30 survival times)
@@ -40,21 +40,31 @@ def CoxRegressionModel(stimes, N, ap_s, ap_s2, ap_s3, ap_s5, ebb_,eap_, ebs, aps
             E[i] = 1
 
         
-    #**************************************MAKING A DATA FRAME************************************************#
-    data1 = {'T':stimes, 'E':E, 'aps':ap_s, 'aps2':ap_s2, 'aps3':ap_s3, 'aps5': ap_s5,'eap':eap_, 'eb': ebb_}
+    #**************************************MAKING A DATA FRAME 1************************************************#
+#     data1 = {'T':stimes, 'E':E, 'aps':ap_s, 'aps2':ap_s2, 'aps3':ap_s3, 'aps5': ap_s5,'eap':eap_, 'eb': ebb_}
+#     df = pd.DataFrame(data=data1)
+
+#     T = df['T']
+#     E = df['E']
+#     aps = df['aps']   
+#     aps2 = df['aps2']
+#     aps3 = df['aps3']
+#     aps5 = df['aps5']
+#     eap = df['eap']
+#     eb = df['eb']
+
+    #print(df)
+    
+     #**************************************MAKING A DATA FRAME 2************************************************#
+    data1 = {'T':stimes, 'E':E, 'aps':ap_s}
     df = pd.DataFrame(data=data1)
 
     T = df['T']
     E = df['E']
-    aps = df['aps']   
-    aps2 = df['aps2']
-    aps3 = df['aps3']
-    aps5 = df['aps5']
-    eap = df['eap']
-    eb = df['eb']
+    aps = df['aps']
+#     eb = df['eb']
 
     #print(df)
-    
     
     #************************************COX PH FITTER*************************************#
 
@@ -73,35 +83,154 @@ def CoxRegressionModel(stimes, N, ap_s, ap_s2, ap_s3, ap_s5, ebb_,eap_, ebs, aps
     #cph.fit(df,duration_col = 'T', event_col = 'E', formula = "eap")
     #cph.fit(df,duration_col = 'T', event_col = 'E')
     
-    cph.fit(df,duration_col = 'T', event_col = 'E', formula = "aps + I(aps**3)")
-    #cph.print_summary()
-    cph.plot_partial_effects_on_outcome(plot_baseline = False, ax = axes, cmap = "coolwarm")
-    #cph.plot_partial_effects_on_outcome(covariates = ['aps'], values = [round(aps_0,3)], plot_baseline = False, ax = axes, cmap = "coolwarm")
-    cph.baseline_survival_.plot(ax=axes, ls = ":", color=f"C{i}")
+#     df['aps**3'] = df['aps']**3
+#     df['aps**5'] = df['aps']**5
+#     df['eb**2'] = df['eb']**2
+#     df['eb*aps'] = df['eb']*df['aps']
+#     df['(eb**2)*(aps)'] = df['eb**2']*df['aps']
 
 
-    #cph.fit(df,duration_col = 'T', event_col = 'E', formula = "eb + aps + I(aps**3)")
+#     df.isnull().sum()
+
+    
+    cph.fit(df,duration_col = 'T', event_col = 'E')# show_progress = True)
+    
+#     initial_point = np.array([6.42,-1.27,0.08]), step_size = 0.1-0.5
+    
+    plt.rc('legend', fontsize=(7))
+        
+    cph.plot_partial_effects_on_outcome(covariates = ['aps'], values = [[aps_0]], ax = axes, cmap = 'viridis')
+#     cph.print_summary()
+    plt.title('aps+ aps3 +aps5 (210 values):(eb,ap,mu)={}'.format((round(ebs,3),round(aps_0,3),mu)), fontsize = 12)
+#     plt.savefig('aps+ aps3+ aps5(210 values)) : (eb,ap,mu)={}.png'.format((round(ebs,3),round(aps_0,3),mu)),dpi = 250)
+
+    return df 
+
+
+
+
+
+#**************************************SET 1 & SET 4 & SET 5 & SET 6 & SET 7***************************************#
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps', 'aps**3','aps**5'], values = [[aps_0,aps_0**3,aps_0**5]], ax = axes, cmap = 'viridis')
+   
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','aps**3','aps**5','eb'], values = [[aps_0,aps_0**3,aps_0**5,round(ebs,3)]], plot_baseline = False, ax = axes, cmap = 'autumn')
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','aps**3','aps**5','eb', 'eb**2'], values = [[aps_0,aps_0**3,aps_0**5,round(ebs,3),round(ebs**2,3)]],plot_baseline = False, ax = axes, cmap = 'winter')
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','aps**3','aps**5','eb', 'eb**2', 'eb*aps'], values = [[aps_0,aps_0**3,aps_0**5,round(ebs,3),round(ebs**2,3),round(ebs*aps_0,3)]],plot_baseline = False, ax = axes, cmap = 'spring')
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','aps**3','aps**5','eb','eb*aps'], values = [[aps_0,aps_0**3,aps_0**5,round(ebs,3),round(ebs*aps_0,3)]],plot_baseline = False, ax = axes, cmap = 'Pastel1')
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','aps**3','aps**5','eb', 'eb**2','(eb**2)*(aps)','eb*aps'], values = [[aps_0,aps_0**3,aps_0**5,round(ebs,3),round(ebs**2,3),round((ebs**2)*(aps_0)),round(ebs*aps_0,3)]],plot_baseline = False, ax = axes, cmap = 'Wistia')
+        
+#     cph.print_summary()
+    
+       
+#     plt.title('Set 5 (18,750 values):(eb,ap,mu)={}'.format((round(ebs,3),round(aps_0,3),mu)), fontsize = 12)
+#     plt.savefig('Set 5 (18 750 values)) : (eb,ap,mu)={}.png'.format((round(ebs,3),round(aps_0,3),mu)),dpi = 250)
+
+#***************************************SET 2 & SET 8*************************************************************************# 
+    
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps', 'aps**3'], values = [[aps_0,aps_0**3]], ax = axes, cmap = 'viridis')
+   
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','aps**3','eb'], values = [[aps_0,aps_0**3,round(ebs,3)]], plot_baseline = False, ax = axes, cmap = 'autumn')
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','aps**3','eb', 'eb**2'], values = [[aps_0,aps_0**3,round(ebs,3),round(ebs**2,3)]],plot_baseline = False, ax = axes, cmap = 'winter')
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','aps**3','eb', 'eb**2', 'eb*aps'], values = [[aps_0,aps_0**3,round(ebs,3),round(ebs**2,3),round(ebs*aps_0,3)]],plot_baseline = False, ax = axes, cmap = 'spring')
+
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','aps**3','eb','eb*aps'], values = [[aps_0,aps_0**3,round(ebs,3),round(ebs*aps_0,3)]],plot_baseline = False, ax = axes, cmap = 'Pastel1')
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','aps**3','eb', 'eb**2','(eb**2)*(aps)','eb*aps'], values = [[aps_0,aps_0**3,round(ebs,3),round(ebs**2,3),round((ebs**2)*(aps_0)),round(ebs*aps_0,3)]],plot_baseline = False, ax = axes, cmap = 'Wistia')
+
+#     cph.print_summary()
+#     plt.title('Set 8 (18,750 values):(eb,ap,mu)={}'.format((round(ebs,3),round(aps_0,3),mu)), fontsize = 12)
+#     plt.savefig('Set 8 (18,750 values)) : (eb,ap,mu)={}.png'.format((round(ebs,3),round(aps_0,3),mu)),dpi = 250)
+    
+    
+#*************************************SET 3 & SET 9*************************************************************************#
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps'], values = [[aps_0]], ax = axes, cmap = 'viridis')
+   
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','eb'], values = [[aps_0,round(ebs,3)]], plot_baseline = False, ax = axes, cmap = 'autumn')
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','eb', 'eb**2'], values = [[aps_0,round(ebs,3),round(ebs**2,3)]],plot_baseline = False, ax = axes, cmap = 'winter')
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','eb', 'eb**2', 'eb*aps'], values = [[aps_0,round(ebs,3),round(ebs**2,3),round(ebs*aps_0,3)]],plot_baseline = False, ax = axes, cmap = 'spring')
+
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','eb','eb*aps'], values = [[aps_0,round(ebs,3),round(ebs*aps_0,3)]],plot_baseline = False, ax = axes, cmap = 'Pastel1')
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','eb', 'eb**2','(eb**2)*(aps)','eb*aps'], values = [[aps_0,round(ebs,3),round(ebs**2,3),round((ebs**2)*(aps_0)),round(ebs*aps_0,3)]],plot_baseline = False, ax = axes, cmap = 'Wistia')
+
+#     cph.print_summary()
+    
+       
+#     plt.title('Set 9 (18,750 values):(eb,ap,mu)={}'.format((round(ebs,3),round(aps_0,3),mu)), fontsize = 12)
+#     plt.savefig('Set 9 (18,750 values)) : (eb,ap,mu)={}.png'.format((round(ebs,3),round(aps_0,3),mu)),dpi = 250)
+
+#****************************************************************************************************************#
+
+    
+#     b0 = cph.baseline_survival_
+#     coeff = cph.params_
+#     conf = cph.confidence_intervals_
+#     var = cph.variance_matrix_
+#     print(b0)
+#     print(coeff)
+#     print(conf)
+#     print(var)
+    
+#******************************************************************************************************************#
+    
+    
+    
+    
+    
+    
+    
+    
+    
+#     cph.plot_partial_effects_on_outcome(covariates = ['aps','aps**3','aps**5','eb', 'eb**2', 'eb*aps'], values = [[1.5,1.5**3,1.5**5,0.5, 0.5**2, 0.5*1.5],[2.0,2.0**3,2.0**5,0.5,0.5**2,0.5*2.0],[2.5,2.5**3,2.5**5,0.5,0.5**2,0.5*2.5]], ax = axes, cmap = 'winter')
+    
+#     print("Summary 2")
+#     cph.print_summary()
+#     b1 = cph.baseline_survival_
+#     print(b1)
+
+    
+    #cph.fit(df,duration_col = 'T', event_col = 'E', show_progress = True, formula = "aps + I(aps**3) + I(aps**5)")
+    #cph.fit(df,duration_col = 'T', event_col = 'E', formula = "aps + eb")
+
+
+           
+  
+       
+        
+            
+        #cph.plot_partial_effects_on_outcome(['aps', 'eb'], values = [[2.5,0],[2.3,0]], plot_baseline = False, ax = axes, cmap = "Blues")
+    #cph.plot_partial_effects_on_outcome(['aps', 'eb'], values = [[2.0,0],[1.5,0]], plot_baseline = False, ax = axes, cmap = "coolwarm")
+    #cph.baseline_survival_.plot(ax=axes, ls = ":", color=f"C{i}")
+
+
+    #cph.fit(df,duration_col = 'T', events_col = 'E', formula = "eb + aps + I(aps**3)")
     #cph.print_summary()
     #cph.plot_partial_effects_on_outcome(covariates = ['aps'], values = [round(aps_0,3)], ax = axes)
 
-           
-    plt.title('Formula(aps vs. aps3 (1050 values)): (eb,ap,mu)={}'.format((round(ebs,3),round(aps_0,3),mu)), fontsize = 12)
-    #plt.savefig('Formula(aps vs. aps3 (all values)) : (eb,ap,mu)={}.png'.format((ebs,round(aps_0,3),mu)))
-       
             
             
             
             
             
             
-            
-            
-            
-            
-            
-            
-            
-            
+ 
+
+
+
+
+
+
             
             
     
