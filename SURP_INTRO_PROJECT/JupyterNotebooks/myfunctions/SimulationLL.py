@@ -36,61 +36,61 @@ def SimulationLL(par):
 
 
 #*********************TIME LOGSPACE*************************#
-    max_dist = 100*a_b
-    Torb = 2.*np.pi
-    Norb_max = 1e4 
-    Tmax = Norb_max*Torb
-    Tmin = 10*Torb
-    Noutputs = 100
-    times = np.logspace(np.log10(Tmin),np.log10(Tmax),Noutputs)
+#     max_dist = 100*a_b
+#     Torb = 2.*np.pi
+#     Norb_max = 1e4 
+#     Tmax = Norb_max*Torb
+#     Tmin = 10*Torb
+#     Noutputs = 100
+#     times = np.logspace(np.log10(Tmin),np.log10(Tmax),Noutputs)
+#     print(times)
 
 #***************SETTING TIME************************#
-#     tfinal = 2e3
-# #     tfinal = 1e4*2*np.pi
-# #     times = np.append(np.linspace(0,1000,10000),np.linspace(1000,1e4*2*np.pi,10000))
-#     times = np.append(np.linspace(0,500,10000),np.linsapce(500,tfinal,1000)[1:])
+    tfinal = 2e3
+#     tfinal = 1e4*2*np.pi
+#     times = np.append(np.linspace(0,1000,10000),np.linspace(1000,1e4*2*np.pi,10000))
+    times = np.append(np.linspace(0,500,10000),np.linspace(500,tfinal,1000)[1:])
 #     print(times)
     
     survtime= np.zeros(Np)  #survival times array
     
     for i,time in enumerate(times):
         
-        sim.integrate(time, exact_finish_time = 0)
-#         sim.integrate(time, exact_finish_time = False)  #changed from exact_finish_time = 0 (07/28/22)
+#         sim.integrate(time, exact_finish_time = 0)
+        sim.integrate(time, exact_finish_time = False)  #changed from exact_finish_time = 0 (07/28/22)
 
 
         
         for j in reversed(range(2,sim.N)):
-#             print('sim start 1')
-#             print('************************')
             p = sim.particles[j]
-#             o = sim.particles[j].calculate_orbit()
-#             p0 = sim.particles[0]
-#             p1 = sim.particles[1]
-#             d = np.sqrt(p.x**2 +p.y**2)
-#             d0 = np.sqrt((p.x-p0.x)**2 +(p.y-p0.y)**2)
-#             d1 = np.sqrt((p.x-p1.x)**2 + (p.y-p1.y)**2)
-#             print('sim start 2')
+            o = sim.particles[j].calculate_orbit()
+            p0 = sim.particles[0]
+            p1 = sim.particles[1]
+            d = np.sqrt(p.x**2 +p.y**2)
+            d0 = np.sqrt((p.x-p0.x)**2 +(p.y-p0.y)**2)
+            d1 = np.sqrt((p.x-p1.x)**2 + (p.y-p1.y)**2)
             
-            if (p.x**2 + p.y**2) > 20**2: #or o.e > 1.0:    #was 100*2, should have been 100**2 (07/28/22)
-#             if d > 20 or d0 < 0.25 or d1 <0.25 or o.e>1.0:
-                survtime[j-2] = time      #sim.t??
+#             if (p.x**2 + p.y**2) > 20**2 or o.e > 1.0:    #was 100*2, should have been 100**2 (07/28/22)
+            if d > 20 or d0 < 0.25 or d1 <0.25 or o.e>1.0:
+                survtime[j-2] = time      #sim.t
 #                 print(f'planet {j} ejected at time = {time/60:.5f} mins, (r = {np.sqrt(p.x**2 + p.y**2):.5f},e={o.e:.5f})')
                 sim.remove(j)
 #                 print('{0} planets remaining',sim.N-2)
 #                 print(f'{sim.N-2} planets remaining')
         
 #         if time in times[::1000]:
-#             print(f'a = {ap}, e = {eb}, mu = {mu}: time = {time}, {sim.N-2} planets remaining')
+#             print(f'a = {a_p}, e = {e_b}, mu = {mu}: time = {time}, {sim.N-2} planets remaining')
+
         
         if sim.N==2:
             break
 
+    print('simulation finished, {} planets remaining'.format(len(sim.particles)-2))
+#     print("simulation finished, {} planets remaining, mean survival time = {}".format(len(sim.particles)-2),np.mean(survtime))
     
     survtime[(survtime==0)] = time
     #print(survtime)
     
-    print("simulation finished, {} planets remaining, mean survival time = {}".format(len(sim.particles)-2),np.mean(survtime))
     
     #print(np.mean(survtime))
     return survtime   
