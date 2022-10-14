@@ -166,6 +166,8 @@ def KaplanMeierEst(ebs, aps, mu, stime, Np):
     
     T_L = df['T_L']
     E_L = df['E_L']
+    delta = np.array(E_L)  #For calculating LOG LIKELIHOOD FUNCTION (0 if ti = T; 1 if ti = ejection - so just used E for now)
+    print(delta)
     
 
     #******************************LIFELINES: Kaplan Meier Estimate*****************************#
@@ -180,78 +182,88 @@ def KaplanMeierEst(ebs, aps, mu, stime, Np):
 
     #For the cure model S(t) = p + (1-p)*(exp(-t/lambda))
     
-    def log_likelihood(theta,t,S,S_err) : #delta):
+    def log_likelihood(theta,t, delta): #S,S_err) : #delta):
         p = theta 
         lambda_ = 100
-        delta = 1
+        delta0 = delta
+#         print(p)
+        
         h = (1/lambda_)*((p/(1-p))*np.exp(t/lambda_) + 1)**(-1)
         H = -np.log(p + (1-p)*np.exp(-t/lambda_))
-        logL = np.sum(delta*np.log(h)-H)
+        logL = np.sum(delta0*np.log(h)-H)
         return logL
 
     def log_prior(theta):
         p = theta 
-        if 0.0<p.any()<1.0:
-            return p.any()
+       
+        if 0.0<p<1.0: #np.all(0.0<p) and np.all(p<1.0):
+           
+            return 0.0 
         return -np.inf 
     
-    def log_prob(theta, T, S,Serr): # delta):
+    def log_prob(theta, T, delta): # S,Serr): # delta):
         lp = log_prior(theta)
         if not np.isfinite(lp):
             return -np.inf
-        return lp + log_likelihood(theta, T, S, Serr)# delta)
+        return lp + log_likelihood(theta, T, delta)# S, Serr)# delta)
 
     from scipy.optimize import minimize 
     np.random.seed()
-    nll = lambda *args: -log_prob(*args) #/ -log_likelihood or -log_prob?
-    initial = 0.0001 #?
-    soln = minimize(nll,initial, args= (T_L,S,Err0)) # delta))
-    print(len(T_L), len(S))
-    p = soln.x
+    nll = lambda *args: log_prob(*args) #/ -log_likelihood() or -log_prob()?
+    initial = 0.01 #?
+#     soln = minimize(nll,initial, args= (T_L, delta))#S,Err0)) # delta))
+    print(len(T_L), len(delta))
+#     p = soln.x
+    p = initial 
+    theta0 = 0.5
+    print(log_prob(theta0, T_L, delta)) 
+
    
     print('p = {}'.format(p))
     
     
     #*******************************************EMCEE**********************************#
-#     import emcee
+    import emcee
 
-#     pos = soln.x + 1e-4 * np.random.randn(32, 3)
-#     nwalkers, ndim = pos.shape
+#     pos = soln.x + 1e-4 * np.random.randn(32,1)
+    pos = initial + 1e-4 * np.random.randn(32,1)
 
-#     sampler = emcee.EnsembleSampler(
-#         nwalkers, ndim, log_prob, args=(T_L, S, Err0)
-#     )
-#     sampler.run_mcmc(pos, 1000, progress=True);   #suggested amoungt 5000
-    
-    
-#     fig, axes = plt.subplots(1,1, figsize=(10, 7), sharex=True)
-#     samples = sampler.get_chain()
-#     labels = ["p"]
-#     for i in range(ndim):
-# #         ax = axes[i]
-#         ax = axes
-#         ax.plot(samples[:, :, i], "k", alpha=0.3)
-#         ax.set_xlim(0, len(samples))
-#         ax.set_ylabel(labels)
-# #         ax.set_ylabel(labels[i])
-#         ax.yaxis.set_label_coords(-0.1, 0.5)
+    nwalkers, ndim = pos.shape
 
-# #     axes[-1].set_xlabel("step number");
-#     axes.set_xlabel("step number"); 
-    
-#     tau = sampler.get_autocorr_time()
-#     print(tau)
-    
-#     flat_samples = sampler.get_chain(discard=100, thin=15, flat=True)
-#     print(flat_samples.shape)
+    sampler = emcee.EnsembleSampler(
+        nwalkers, ndim, log_prob, args=(T_L, delta)#, S, Err0)
+    )
+    sampler.run_mcmc(pos, 1000, progress=True);   #suggested amoungt 5000
     
     
-    
-#     import corner
+    fig, axes = plt.subplots(1,1, figsize=(10, 7), sharex=True)
+    samples = sampler.get_chain()
+    labels = ["p"]
+    for i in range(ndim):
+#         ax = axes[i]
+        ax = axes
+        ax.plot(samples[:, :, i], "k", alpha=0.3)
+        ax.set_xlim(0, len(samples))
+        ax.set_ylabel(labels)
+#         ax.set_ylabel(labels[i])
+        ax.yaxis.set_label_coords(-0.1, 0.5)
 
-#     fig = corner.corner(
-#         flat_samples, labels=labels, truths=[p]
-#     );
+#     axes[-1].set_xlabel("step number");
+    axes.set_xlabel("step number"); 
+    
+    tau = sampler.get_autocorr_time()
+    print(tau)
+    
+    flat_samples = sampler.get_chain(discard=100, thin=15, flat=True)
+    print(flat_samples.shape)
+    
+    
+    
+    import corner
+
+    fig = corner.corner(
+        flat_samples, labels=labels, truths=[p]
+    );
 
 
 

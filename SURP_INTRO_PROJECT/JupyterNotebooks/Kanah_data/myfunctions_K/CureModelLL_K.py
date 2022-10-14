@@ -27,18 +27,19 @@ def CureModelLL_K(ebs, aps_0, mu, stime, Np, pv):
     #*************************************EVENT OBSERVATION**************************************************#
     E = np.zeros(Np).astype(int)
     
+    #62831
     for i in range(0,Np,1):
-        if ((stime[i]) > 62831):
+        if ((stime[i]) > 62800):
             E[i] = 0
         else:
             E[i] = 1
 
     
      #**************************************MAKING A DATA FRAME 2************************************************#
-    data1 = {'T':stime[0], 'E':E}
+    data1 = {'T':stime, 'E':E}
     df = pd.DataFrame(data=data1)
 
-    
+    print(data1) 
     T = df['T']
     E = df['E']
     
